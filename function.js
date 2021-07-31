@@ -1,10 +1,21 @@
 var data, svg, bandScale, text;
 data = [];
 var time = 700;
-for (var i = 0; i < 15; i++) {
-  data.push(Math.floor(Math.random() * 100) + 1);
+function randomData() {
+  data = [];
+  n = 0;
+  while (n < 15) {
+    d = Math.floor(Math.random() * 30) + 1;
+    if (data.includes(d) != true) {
+      data.push(d);
+      n++;
+    }
+  }
+  return data;
 }
-var h = 100,
+var data = randomData();
+
+var h = 150,
   w = 800;
 var heightScale = d3
   .scaleLinear()
@@ -68,10 +79,7 @@ function createChart() {
 }
 
 document.getElementById("random-data").addEventListener("click", function () {
-  data = [];
-  for (var i = 0; i < 15; i++) {
-    data.push(Math.floor(Math.random() * 100) + 1);
-  }
+  var data = randomData();
   svg.remove();
   createChart();
 });
