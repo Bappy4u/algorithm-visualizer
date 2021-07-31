@@ -7,6 +7,7 @@
 
 h1 {
   text-align: center;
+  font-family: sans-serif;
 }
 button {
   display: block;
@@ -16,4 +17,37 @@ button {
   background: steelblue;
   color: rgb(218, 238, 105);
   font-size: 20px;
+  cursor: pointer;
+}
+button {
+  margin: auto;
+  margin-top: 50px;
+  padding: 7px 30px;
+  border: none;
+}
+
+button {
+  background-image: linear-gradient(
+    to right,
+    #348f50 0%,
+    #56b4d3 51%,
+    #348f50 100%
+  );
+}
+button {
+  padding: 15px 45px;
+  text-align: center;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
+  color: white;
+  box-shadow: 0 0 20px #eee;
+  border-radius: 10px;
+  display: block;
+}
+
+button:hover {
+  background-position: right center; /* change the direction of the change here */
+  color: #fff;
+  text-decoration: none;
 }
