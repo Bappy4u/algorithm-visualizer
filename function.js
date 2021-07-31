@@ -74,14 +74,18 @@ function selectionSort() {
           .attr("x", function (d) {
             return bandScale(d);
           });
-        var swooshAudio = new Audio("sound-effects/swoosh.mp3");
+        var swooshAudio = new Audio(
+          "/algorithm-visualizer/sound-effects/swoosh.mp3"
+        );
         swooshAudio.play();
       }
 
       await timer(1000); // then the created Promise can be awaited
     }
     svg.selectAll("rect").style("fill", "green");
-    var completeAudio = new Audio("sound-effects/complete.mp3");
+    var completeAudio = new Audio(
+      "/algorithm-visualizer/sound-effects/complete.mp3"
+    );
     completeAudio.play();
   }
   sort();
