@@ -53,7 +53,6 @@ function createChart() {
     })
     .attr("y", function (d) {
       var val = h - heightScale(d);
-      console.log(val);
       if (val > 20) {
         return val;
       } else {
@@ -72,7 +71,6 @@ document.getElementById("random-data").addEventListener("click", function () {
   for (var i = 0; i < 15; i++) {
     data.push(Math.floor(Math.random() * 100) + 1);
   }
-  console.log(data);
   svg.remove();
   createChart();
 });
@@ -93,7 +91,13 @@ function selectionSort() {
         temp = data[i];
         data[i] = smallest;
         data[pos] = temp;
-
+        var smi = bandScale(smallest);
+        svg.selectAll("rect").each(function (d, i) {
+          console.log(d3.select(this).attr("height"));
+          if (smi == d3.select(this).attr("height")) {
+            console.log(smi);
+          }
+        });
         var swooshAudio = new Audio(
           "/algorithm-visualizer/sound-effects/swoosh.mp3"
         );
