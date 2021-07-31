@@ -1,5 +1,8 @@
-var data = [23, 15, 16, 8, 5, 4, 19, 22];
-var svg, bandScale;
+var data, svg, bandScale, text;
+data = [];
+for (var i = 0; i < 15; i++) {
+  data.push(Math.floor(Math.random() * 100) + 1);
+}
 createChart();
 
 function createChart() {
@@ -35,11 +38,38 @@ function createChart() {
     .attr("height", function (d) {
       return heightScale(d);
     })
-    .style("fill", "steelblue");
+    .style("fill", "rgb(173, 216, 230)");
+
+  svg
+    .selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+    .text(function (d) {
+      return d;
+    })
+    .attr("x", function (d, i) {
+      return bandScale(d) + 5;
+    })
+    .attr("y", function (d) {
+      var val = h - heightScale(d);
+      console.log(val);
+      if (val > 20) {
+        return val;
+      } else {
+        return 50;
+      }
+    })
+    .style("width", bandScale.bandwidth)
+    .style("fill", "black")
+    .style("font-size", w / data.length / 3)
+    .style("font-family", "sans-serif")
+    .style("z-index", 1);
 }
+
 document.getElementById("random-data").addEventListener("click", function () {
   data = [];
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < 15; i++) {
     data.push(Math.floor(Math.random() * 100) + 1);
   }
   console.log(data);
@@ -63,23 +93,13 @@ function selectionSort() {
         temp = data[i];
         data[i] = smallest;
         data[pos] = temp;
-        var dOrder = data.map(function (d) {
-          return d;
-        });
-        bandScale.domain(dOrder);
-        svg
-          .transition()
-          .duration(750)
-          .selectAll("rect")
-          .attr("x", function (d) {
-            return bandScale(d);
-          });
+
         var swooshAudio = new Audio(
           "/algorithm-visualizer/sound-effects/swoosh.mp3"
         );
         swooshAudio.play();
       }
-
+      sortAnimate(data);
       await timer(1000); // then the created Promise can be awaited
     }
     svg.selectAll("rect").style("fill", "green");
@@ -94,3 +114,24 @@ function selectionSort() {
 document
   .getElementById("selection-sort")
   .addEventListener("click", selectionSort);
+
+function sortAnimate(data) {
+  var dOrder = data.map(function (d) {
+    return d;
+  });
+  bandScale.domain(dOrder);
+  svg
+    .transition()
+    .duration(750)
+    .selectAll("rect")
+    .attr("x", function (d) {
+      return bandScale(d);
+    });
+  svg
+    .transition()
+    .duration(750)
+    .selectAll("text")
+    .attr("x", function (d) {
+      return bandScale(d) + 5;
+    });
+}
