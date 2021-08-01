@@ -95,10 +95,7 @@ function createChart(data) {
 
 // bar visualization while sorting. Bar Swapping
 function swapBar(data) {
-  var dOrder = data.map(function (d) {
-    return d;
-  });
-  bandScale.domain(dOrder);
+  bandScale.domain(data);
   svg
     .transition()
     .duration(750)
