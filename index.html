@@ -10,14 +10,34 @@
   <body>
     <h1>Sorting Visualizer</h1>
     <button id="random-data">Generate Random Data</button>
+    <div class="radio">
+      <form action="">
+        <label
+          ><input
+            type="radio"
+            name="algo-name"
+            value="selection-sort"
+          />Selection Sort</label
+        >
+        <label
+          ><input
+            type="radio"
+            name="algo-name"
+            value="bubble-sort"
+            checked
+          />Bubble Sort</label
+        >
+      </form>
+    </div>
     <div class="container">
       <div class="bar-chart">
         <div id="chart"></div>
         <hr />
-        <button id="selection-sort">Sort</button>
+        <button id="sort">Sort</button>
       </div>
     </div>
     <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="base.js"></script>
     <script src="function.js"></script>
   </body>
 </html>

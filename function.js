@@ -1,112 +1,49 @@
-var data, svg, bandScale, text;
-data = [];
-var time = 700;
-function randomData() {
-  data = [];
-  n = 0;
-  while (n < 15) {
-    d = Math.floor(Math.random() * 30) + 1;
-    if (data.includes(d) != true) {
-      data.push(d);
-      n++;
-    }
-  }
-  return data;
-}
-var data = randomData();
+var svg,
+  bandScale,
+  text,
+  maxElement = 15,
+  dataRange = maxElement * 2,
+  areaHeight = 150,
+  areaWidth = 800,
+  time = 300,
+  traverseColor = "#ffcaa1",
+  smallestColor = "#ab87ff",
+  unsortedColor = "#add8e6";
 
-var h = 150,
-  w = 800;
+// generating random data
+var data = randomData(maxElement, dataRange);
+
+//a d3 function for scaling height for all the data this function
 var heightScale = d3
   .scaleLinear()
   .domain([0, d3.max(data)])
-  .range([0, h]);
+  .range([0, areaHeight]);
 
-createChart();
+// initialized a chart with random value
+createChart(data);
 
-function createChart() {
-  svg = d3.select("#chart").append("svg");
-
-  //var bandWidth = w / data.length - 1;
-
-  bandScale = d3.scaleBand().domain(data).range([0, w]).padding(0.1);
-
-  svg.attr("width", w).attr("height", h);
-
-  svg
-    .selectAll("rect")
-    .data(data)
-    .enter()
-    .append("rect")
-    .attr("x", function (d, i) {
-      return bandScale(d);
-    })
-    .attr("y", function (d) {
-      return h - heightScale(d);
-    })
-    .attr("width", function () {
-      return bandScale.bandwidth();
-    })
-    .attr("height", function (d) {
-      return heightScale(d);
-    })
-    .style("fill", "rgb(173, 216, 230)");
-
-  svg
-    .selectAll("text")
-    .data(data)
-    .enter()
-    .append("text")
-    .text(function (d) {
-      return d;
-    })
-    .attr("x", function (d, i) {
-      return bandScale(d) + 5;
-    })
-    .attr("y", function (d) {
-      var val = h - heightScale(d);
-      if (val > 20) {
-        return val;
-      } else {
-        return 50;
-      }
-    })
-    .style("width", bandScale.bandwidth)
-    .style("fill", "black")
-    .style("font-size", w / data.length / 3)
-    .style("font-family", "sans-serif")
-    .style("z-index", 1);
-}
-
-document.getElementById("random-data").addEventListener("click", function () {
-  var data = randomData();
-  svg.remove();
-  createChart();
-});
-function selectionSort() {
+let Sort = new sortData(data);
+Sort.selectionSort = function () {
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
   async function sort() {
     // We need to wrap the loop into an async function for this to work
-    var traverseColor = "#ffcaa1";
-    var smallestColor = "#ab87ff";
-    var unsortedColor = "#add8e6";
     for (var i = 0; i < data.length; i++) {
       smallest = data[i];
       pos = i;
-      forColorAnimation(smallest, smallestColor);
+      changeBarColor(smallest, smallestColor);
       await timer(time);
       for (var j = i + 1; j < data.length; j++) {
-        forColorAnimation(data[j], traverseColor);
+        changeBarColor(data[j], traverseColor);
         if (smallest > data[j]) {
           await timer(time);
-          forColorAnimation(smallest, unsortedColor);
+          changeBarColor(smallest, unsortedColor);
           smallest = data[j];
           pos = j;
         }
 
-        forColorAnimation(smallest, smallestColor);
+        changeBarColor(smallest, smallestColor);
         await timer(time);
-        forColorAnimation(data[j], unsortedColor);
+        changeBarColor(data[j], unsortedColor);
       }
       if (data[i] != smallest) {
         temp = data[i];
@@ -118,49 +55,63 @@ function selectionSort() {
         );
         swooshAudio.play();
       }
-      forColorAnimation(smallest, "#56b4d3");
-      sortAnimate(data);
+      changeBarColor(smallest, "#56b4d3");
+      swapBar(data);
       await timer(time); // then the created Promise can be awaited
     }
-    svg.selectAll("rect").style("fill", "green");
+    svg.selectAll("rect").style("fill", "#56b4d3");
     var completeAudio = new Audio(
       "/algorithm-visualizer/sound-effects/complete.mp3"
     );
     completeAudio.play();
   }
   sort();
-}
+};
 
-document
-  .getElementById("selection-sort")
-  .addEventListener("click", selectionSort);
+Sort.bubbleSort = function () {
+  const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+  async function sort() {
+    var temp;
+    for (i = 0; i < data.length - 1; i++) {
+      changeBarColor(data[0], smallestColor);
+      await timer(time);
+      for (j = 0; j < data.length - i - 1; j++) {
+        await timer(time);
+        changeBarColor(data[j + 1], traverseColor);
+        await timer(time);
+        if (data[j] > data[j + 1]) {
+          temp = data[j];
+          data[j] = data[j + 1];
+          data[j + 1] = temp;
+          changeBarColor(data[j + 1], smallestColor);
 
-function sortAnimate(data) {
-  var dOrder = data.map(function (d) {
-    return d;
-  });
-  bandScale.domain(dOrder);
-  svg
-    .transition()
-    .duration(750)
-    .selectAll("rect")
-    .attr("x", function (d) {
-      return bandScale(d);
-    });
-  svg
-    .transition()
-    .duration(750)
-    .selectAll("text")
-    .attr("x", function (d) {
-      return bandScale(d) + 5;
-    });
-}
-
-function forColorAnimation(d, color) {
-  var smi = heightScale(d);
-  svg.selectAll("rect").each(function (d, i) {
-    if (smi == d3.select(this).attr("height")) {
-      d3.select(this).style("fill", color);
+          swapBar(data);
+          await timer(time);
+        } else {
+          changeBarColor(data[j + 1], smallestColor);
+        }
+        changeBarColor(data[j], unsortedColor);
+      }
     }
-  });
-}
+    svg.selectAll("rect").style("fill", "#56b4d3");
+    var completeAudio = new Audio(
+      "/algorithm-visualizer/sound-effects/complete.mp3"
+    );
+    completeAudio.play();
+  }
+  sort();
+};
+
+document.getElementById("sort").addEventListener("click", function () {
+  if (getAlgo() == "selection-sort") {
+    Sort.selectionSort();
+  } else if (getAlgo() == "bubble-sort") {
+    Sort.bubbleSort();
+  }
+});
+
+document.getElementById("random-data").addEventListener("click", function () {
+  var data = randomData(maxElement, dataRange);
+  svg.remove();
+  createChart(data);
+});

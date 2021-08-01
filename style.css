@@ -1,3 +1,6 @@
+* {
+  font-family: sans-serif;
+}
 .container {
   display: flex;
   justify-content: center;
@@ -50,4 +53,15 @@ button:hover {
   background-position: right center; /* change the direction of the change here */
   color: #fff;
   text-decoration: none;
+}
+form {
+  margin-top: 30px;
+  text-align: center;
+}
+label {
+  font-size: 20px;
+  cursor: pointer;
+}
+rect:hover {
+  cursor: pointer;
 }
