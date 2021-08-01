@@ -8,7 +8,8 @@ var svg,
   time = 300,
   traverseColor = "#ffcaa1",
   smallestColor = "#ab87ff",
-  unsortedColor = "#add8e6";
+  unsortedColor = "#add8e6",
+  sortedColor = "#56b4d3";
 
 // generating random data
 var data = randomData(maxElement, dataRange);
@@ -52,19 +53,15 @@ Sort.selectionSort = function () {
         data[i] = smallest;
         data[pos] = temp;
 
-        var swooshAudio = new Audio(
-          "/algorithm-visualizer/sound-effects/swoosh.mp3"
-        );
+        var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
         swooshAudio.play();
       }
-      changeBarColor(smallest, "#56b4d3");
+      changeBarColor(smallest, sortedColor);
       swapBar(data);
       await timer(time); // then the created Promise can be awaited
     }
-    svg.selectAll("rect").style("fill", "#56b4d3");
-    var completeAudio = new Audio(
-      "/algorithm-visualizer/sound-effects/complete.mp3"
-    );
+    svg.selectAll("rect").style("fill", sortedColor);
+    var completeAudio = new Audio("./sound-effects/complete.mp3");
     completeAudio.play();
   }
   sort();
@@ -95,11 +92,11 @@ Sort.bubbleSort = function () {
         }
         changeBarColor(data[j], unsortedColor);
       }
+      changeBarColor(data[j], sortedColor);
     }
+
     svg.selectAll("rect").style("fill", "#56b4d3");
-    var completeAudio = new Audio(
-      "/algorithm-visualizer/sound-effects/complete.mp3"
-    );
+    var completeAudio = new Audio("./sound-effects/complete.mp3");
     completeAudio.play();
   }
   sort();
