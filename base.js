@@ -5,6 +5,9 @@ class sortData {
   }
   selectionSort() {}
   bubbleSort() {}
+  stopSort() {
+    return false;
+  }
 }
 
 //get selected algorithm

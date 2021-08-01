@@ -4,28 +4,36 @@
 .container {
   display: flex;
   justify-content: center;
-  height: 90vh;
   align-items: center;
+}
+.bar-chart {
+  margin-top: 40px;
+  background-color: #eee;
+  padding: 50px 20px 30px 20px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
 h1 {
   text-align: center;
   font-family: sans-serif;
+  padding: 0;
+  margin: 30px 0 0 0;
 }
 button {
   display: block;
   margin: auto;
-  margin-top: 30px;
+
   padding: 5px 20px;
   background: steelblue;
   color: rgb(218, 238, 105);
-  font-size: 20px;
+  font-size: 15px;
   cursor: pointer;
+  font-weight: 600;
 }
 button {
   margin: auto;
-  margin-top: 50px;
-  padding: 7px 30px;
+  margin-top: 20px;
+  padding: 2px 30px;
   border: none;
 }
 
@@ -38,7 +46,7 @@ button {
   );
 }
 button {
-  padding: 15px 45px;
+  padding: 10px 30px;
   text-align: center;
   text-transform: uppercase;
   transition: 0.5s;
@@ -55,11 +63,14 @@ button:hover {
   text-decoration: none;
 }
 form {
-  margin-top: 30px;
+  margin-top: 20px;
   text-align: center;
 }
 label {
   font-size: 20px;
+  cursor: pointer;
+}
+input {
   cursor: pointer;
 }
 rect:hover {

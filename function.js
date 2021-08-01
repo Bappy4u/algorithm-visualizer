@@ -12,7 +12,9 @@ var svg,
 
 // generating random data
 var data = randomData(maxElement, dataRange);
-
+function setSpeed() {
+  time = document.getElementById("speed").value;
+}
 //a d3 function for scaling height for all the data this function
 var heightScale = d3
   .scaleLinear()
@@ -84,7 +86,8 @@ Sort.bubbleSort = function () {
           data[j] = data[j + 1];
           data[j + 1] = temp;
           changeBarColor(data[j + 1], smallestColor);
-
+          var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
+          swooshAudio.play();
           swapBar(data);
           await timer(time);
         } else {
@@ -112,6 +115,7 @@ document.getElementById("sort").addEventListener("click", function () {
 
 document.getElementById("random-data").addEventListener("click", function () {
   var data = randomData(maxElement, dataRange);
+  Sort.stopSort();
   svg.remove();
   createChart(data);
 });
