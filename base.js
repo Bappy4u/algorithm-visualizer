@@ -86,7 +86,7 @@ function createChart(data) {
     .attr("y", function (d) {
       return areaHeight - 15;
     })
-    .style("width", bandScale.bandwidth)
+    .style("width", bandScale.bandwidth())
     .style("fill", "black")
     .style("font-size", areaWidth / data.length / 3)
     .style("font-family", "sans-serif")
@@ -108,6 +108,6 @@ function swapBar(data) {
     .duration(750)
     .selectAll("text")
     .attr("x", function (d) {
-      return bandScale(d) + 5;
+      return bandScale(d) + 10;
     });
 }
