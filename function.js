@@ -24,7 +24,7 @@ var heightScale = d3
 
 // initialized a chart with random value
 createChart(data);
-
+/*
 let Sort = new sortData(data);
 Sort.selectionSort = function () {
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -101,12 +101,145 @@ Sort.bubbleSort = function () {
   }
   sort();
 };
+*/
+const selectionS = {
+  selectionSort() {
+    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    async function sort(self) {
+      for (let i = 0; i < data.length; i++) {
+        if (self.abort) {
+          self.abort = false;
+          return;
+        }
+        smallest = data[i];
+        pos = i;
+        changeBarColor(smallest, smallestColor);
+        await timer(time);
+        for (var j = i + 1; j < data.length; j++) {
+          if (self.abort) {
+            self.abort = false;
+            return;
+          }
+          changeBarColor(data[j], traverseColor);
+          if (smallest > data[j]) {
+            await timer(time);
+            changeBarColor(smallest, unsortedColor);
+            smallest = data[j];
+            pos = j;
+          }
+
+          changeBarColor(smallest, smallestColor);
+          await timer(time);
+          changeBarColor(data[j], unsortedColor);
+        }
+        if (data[i] != smallest) {
+          temp = data[i];
+          data[i] = smallest;
+          data[pos] = temp;
+
+          var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
+          swooshAudio.play();
+        }
+        changeBarColor(smallest, sortedColor);
+        swapBar(data);
+        await timer(time); // then the created Promise can be awaited
+      }
+    }
+
+    sort(this);
+  },
+
+  selectionSortStop() {
+    this.abort = true;
+  },
+};
+
+const bubbleS = {
+  bubbleSort() {
+    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    async function sort(self) {
+      var temp;
+      for (let i = 0; i < data.length - 1; i++) {
+        console.log(self.abort);
+        if (self.abort) {
+          self.abort = false;
+          return;
+        }
+
+        changeBarColor(data[0], smallestColor);
+        await timer(time);
+        for (j = 0; j < data.length - i - 1; j++) {
+          if (self.abort) {
+            self.abort = false;
+            changeBarColor(data[j], unsortedColor);
+            return;
+          }
+          await timer(time);
+          changeBarColor(data[j + 1], traverseColor);
+          await timer(time);
+          if (data[j] > data[j + 1]) {
+            temp = data[j];
+            data[j] = data[j + 1];
+            data[j + 1] = temp;
+            changeBarColor(data[j + 1], smallestColor);
+            var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
+            swooshAudio.play();
+            swapBar(data);
+            await timer(time);
+          } else {
+            changeBarColor(data[j + 1], smallestColor);
+          }
+          changeBarColor(data[j], unsortedColor);
+        }
+        changeBarColor(data[j], sortedColor);
+      }
+    }
+
+    sort(this);
+  },
+
+  bubbleSortStop() {
+    this.abort = true;
+  },
+};
+
+function stopSorting() {
+  const stopBubbleSort = bubbleS.bubbleSortStop.bind(bubbleS);
+  const stopSelectionSort = selectionS.selectionSortStop.bind(selectionS);
+
+  stopBubbleSort();
+  stopSelectionSort();
+}
+function startSorting() {
+  if (getAlgo() == "bubble-sort") {
+    const bubbleSortStarted = bubbleS.bubbleSort.bind(bubbleS);
+    console.log("clicked buble");
+    bubbleSortStarted();
+  } else if (getAlgo() == "selection-sort") {
+    const selectionSortStarted = selectionS.selectionSort.bind(selectionS);
+    console.log("clicked Selection");
+    selectionSortStarted();
+  }
+}
 
 document.getElementById("sort").addEventListener("click", function () {
+  startSorting();
+});
+
+document.getElementById("random-data").addEventListener("click", function () {
+  stopSorting();
+  svg.remove();
+  var data = randomData(maxElement, dataRange);
+  createChart(data);
+});
+/*
+document.getElementById("sort").addEventListener("click", function () {
   if (getAlgo() == "selection-sort") {
-    Sort.selectionSort();
+    selectionS.selectionSort.bind(bubbleS);
   } else if (getAlgo() == "bubble-sort") {
-    Sort.bubbleSort();
+    bubbleS.bubbleSort.bind(bubbleS);
   }
 });
 
@@ -116,3 +249,4 @@ document.getElementById("random-data").addEventListener("click", function () {
   svg.remove();
   createChart(data);
 });
+*/
