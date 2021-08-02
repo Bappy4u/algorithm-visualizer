@@ -111,3 +111,15 @@ function swapBar(data) {
       return bandScale(d) + 10;
     });
 }
+
+function togglePlay() {
+  var sortElement = document.getElementById("sort");
+  var stopElement = document.getElementById("stop");
+  if (isSorted) {
+    sortElement.classList.add("none");
+    stopElement.classList.add("none");
+  } else {
+    sortElement.classList.toggle("none");
+    stopElement.classList.toggle("none");
+  }
+}
