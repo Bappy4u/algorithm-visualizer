@@ -9,7 +9,9 @@ var svg,
   traverseColor = "#ffcaa1",
   smallestColor = "#ab87ff",
   unsortedColor = "#add8e6",
-  sortedColor = "#56b4d3";
+  sortedColor = "#56b4d3",
+  isSorting = false,
+  isSorted = false;
 
 // generating random data
 var data = randomData(maxElement, dataRange);
@@ -24,84 +26,7 @@ var heightScale = d3
 
 // initialized a chart with random value
 createChart(data);
-/*
-let Sort = new sortData(data);
-Sort.selectionSort = function () {
-  const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-  async function sort() {
-    // We need to wrap the loop into an async function for this to work
-    for (var i = 0; i < data.length; i++) {
-      smallest = data[i];
-      pos = i;
-      changeBarColor(smallest, smallestColor);
-      await timer(time);
-      for (var j = i + 1; j < data.length; j++) {
-        changeBarColor(data[j], traverseColor);
-        if (smallest > data[j]) {
-          await timer(time);
-          changeBarColor(smallest, unsortedColor);
-          smallest = data[j];
-          pos = j;
-        }
 
-        changeBarColor(smallest, smallestColor);
-        await timer(time);
-        changeBarColor(data[j], unsortedColor);
-      }
-      if (data[i] != smallest) {
-        temp = data[i];
-        data[i] = smallest;
-        data[pos] = temp;
-
-        var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
-        swooshAudio.play();
-      }
-      changeBarColor(smallest, sortedColor);
-      swapBar(data);
-      await timer(time); // then the created Promise can be awaited
-    }
-    svg.selectAll("rect").style("fill", sortedColor);
-    var completeAudio = new Audio("./sound-effects/complete.mp3");
-    completeAudio.play();
-  }
-  sort();
-};
-
-Sort.bubbleSort = function () {
-  const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-  async function sort() {
-    var temp;
-    for (i = 0; i < data.length - 1; i++) {
-      changeBarColor(data[0], smallestColor);
-      await timer(time);
-      for (j = 0; j < data.length - i - 1; j++) {
-        await timer(time);
-        changeBarColor(data[j + 1], traverseColor);
-        await timer(time);
-        if (data[j] > data[j + 1]) {
-          temp = data[j];
-          data[j] = data[j + 1];
-          data[j + 1] = temp;
-          changeBarColor(data[j + 1], smallestColor);
-          var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
-          swooshAudio.play();
-          swapBar(data);
-          await timer(time);
-        } else {
-          changeBarColor(data[j + 1], smallestColor);
-        }
-        changeBarColor(data[j], unsortedColor);
-      }
-      changeBarColor(data[j], sortedColor);
-    }
-
-    svg.selectAll("rect").style("fill", "#56b4d3");
-    var completeAudio = new Audio("./sound-effects/complete.mp3");
-    completeAudio.play();
-  }
-  sort();
-};
-*/
 const selectionS = {
   selectionSort() {
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -145,6 +70,12 @@ const selectionS = {
         swapBar(data);
         await timer(time); // then the created Promise can be awaited
       }
+      svg.selectAll("rect").style("fill", "#56b4d3");
+      var completeAudio = new Audio("./sound-effects/complete.mp3");
+      completeAudio.play();
+      isSorting = false;
+      isSorted = true;
+      togglePlay();
     }
 
     sort(this);
@@ -152,6 +83,7 @@ const selectionS = {
 
   selectionSortStop() {
     this.abort = true;
+    isSorting = false;
   },
 };
 
@@ -162,7 +94,6 @@ const bubbleS = {
     async function sort(self) {
       var temp;
       for (let i = 0; i < data.length - 1; i++) {
-        console.log(self.abort);
         if (self.abort) {
           self.abort = false;
           return;
@@ -195,6 +126,12 @@ const bubbleS = {
         }
         changeBarColor(data[j], sortedColor);
       }
+      svg.selectAll("rect").style("fill", "#56b4d3");
+      var completeAudio = new Audio("./sound-effects/complete.mp3");
+      completeAudio.play();
+      isSorting = false;
+      isSorted = true;
+      togglePlay();
     }
 
     sort(this);
@@ -202,51 +139,54 @@ const bubbleS = {
 
   bubbleSortStop() {
     this.abort = true;
+    isSorting = false;
   },
 };
 
 function stopSorting() {
   const stopBubbleSort = bubbleS.bubbleSortStop.bind(bubbleS);
   const stopSelectionSort = selectionS.selectionSortStop.bind(selectionS);
-
-  stopBubbleSort();
-  stopSelectionSort();
+  if (running == "bubble") {
+    stopBubbleSort();
+  } else if (running == "selection") {
+    stopSelectionSort();
+  }
 }
 function startSorting() {
   if (getAlgo() == "bubble-sort") {
     const bubbleSortStarted = bubbleS.bubbleSort.bind(bubbleS);
-    console.log("clicked buble");
+    running = "bubble";
     bubbleSortStarted();
   } else if (getAlgo() == "selection-sort") {
     const selectionSortStarted = selectionS.selectionSort.bind(selectionS);
-    console.log("clicked Selection");
+    running = "selection";
     selectionSortStarted();
   }
 }
 
 document.getElementById("sort").addEventListener("click", function () {
+  isSorting = true;
   startSorting();
+  togglePlay();
 });
 
-document.getElementById("random-data").addEventListener("click", function () {
-  stopSorting();
-  svg.remove();
-  var data = randomData(maxElement, dataRange);
-  createChart(data);
-});
-/*
-document.getElementById("sort").addEventListener("click", function () {
-  if (getAlgo() == "selection-sort") {
-    selectionS.selectionSort.bind(bubbleS);
-  } else if (getAlgo() == "bubble-sort") {
-    bubbleS.bubbleSort.bind(bubbleS);
+document.getElementById("stop").addEventListener("click", function () {
+  if (isSorting) {
+    stopSorting();
+    togglePlay();
   }
 });
 
 document.getElementById("random-data").addEventListener("click", function () {
-  var data = randomData(maxElement, dataRange);
-  Sort.stopSort();
+  if (isSorting) {
+    stopSorting();
+    togglePlay();
+  }
+  if (isSorted) {
+    isSorted = false;
+    document.getElementById("sort").classList.remove("none");
+  }
   svg.remove();
+  var data = randomData(maxElement, dataRange);
   createChart(data);
 });
-*/

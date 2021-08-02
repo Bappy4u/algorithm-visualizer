@@ -76,3 +76,14 @@ input {
 rect:hover {
   cursor: pointer;
 }
+.none {
+  display: none;
+}
+.stop {
+  background-image: linear-gradient(
+    to right,
+    #ad4a04 0%,
+    #d36756 51%,
+    #8f5a34 100%
+  );
+}
