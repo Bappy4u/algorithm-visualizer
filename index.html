@@ -4,30 +4,35 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sorting Visualizer</title>
+    <meta
+      name="description"
+      content="Sorting algorithm visualizer using D3js. It will help you to understand the algorithm. I've used swapping animation for clear understanding of the algorithm."
+    />
+    <title>Sorting Algorithm Visualizer | Najmul H. Bappy</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <p class="sound"><a id="sound" href="#">Sound 🎵</a></p>
-    <h1>Sorting Visualizer</h1>
+    <h1>Sorting Algorithm Visualizer</h1>
     <button id="random-data">Generate Random Data</button>
     <div class="radio">
       <form action="">
-        <label
-          ><input
+        <label>
+          <label
+            ><input
+              type="radio"
+              name="algo-name"
+              value="bubble-sort"
+              checked
+            />Bubble Sort</label
+          >
+          <input
             type="radio"
             name="algo-name"
             value="selection-sort"
           />Selection Sort</label
         >
-        <label
-          ><input
-            type="radio"
-            name="algo-name"
-            value="bubble-sort"
-            checked
-          />Bubble Sort</label
-        >
+
         <br />
         <br />
         <label>
