@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <p class="sound"><a id="sound" href="#">Sound 🎵</a></p>
     <h1>Sorting Visualizer</h1>
     <button id="random-data">Generate Random Data</button>
     <div class="radio">
@@ -36,20 +37,29 @@
             id="speed"
             name="speed"
             min="100"
-            max="1000"
+            max="800"
+            value="300"
             onchange="setSpeed()"
           />
         </label>
       </form>
+      <button id="sort">Sort</button>
+      <button id="stop" class="none stop">Stop</button>
     </div>
     <div class="container">
       <div class="bar-chart">
         <div id="chart"></div>
         <hr />
-        <button id="sort">Sort</button>
-        <button id="stop" class="none stop">Stop</button>
       </div>
     </div>
+    <footer>
+      <div class="footer-text">
+        <p>
+          Made with <span class="love">❤</span> by
+          <a href="https://nbappy.me/">Najmul H. Bappy</a>
+        </p>
+      </div>
+    </footer>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="base.js"></script>
     <script src="function.js"></script>
