@@ -3,7 +3,7 @@ var svg,
   text,
   maxElement = 15,
   dataRange = maxElement * 2,
-  areaHeight = 150,
+  areaHeight = 250,
   areaWidth = 800,
   time = 300,
   traverseColor = "#ffcaa1",
@@ -12,6 +12,11 @@ var svg,
   sortedColor = "#56b4d3",
   isSorting = false,
   isSorted = false;
+
+var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
+var completeAudio = new Audio("./sound-effects/complete.mp3");
+swooshAudio.volume = 0.3;
+completeAudio.volume = 0.3;
 
 // generating random data
 var data = randomData(maxElement, dataRange);
@@ -27,12 +32,74 @@ var heightScale = d3
 // initialized a chart with random value
 createChart(data);
 
-const selectionS = {
-  selectionSort() {
+// javascript objects for performing different sorting algorithm
+const SortAlgo = {
+  // bubble sort methods to perform bubble sort algorithm
+  bubbleSort() {
+    // promise for async bubble sort with delay
+
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+    // async function for bubble sort
 
     async function sort(self) {
+      var temp;
+      for (let i = 0; i < data.length - 1; i++) {
+        // If user click on stop button then this function will stop performing here.
+        if (self.abort) {
+          self.abort = false;
+          return;
+        }
+        // changing initial smallest bar color
+        changeBarColor(data[0], smallestColor);
+        await timer(time);
+        for (j = 0; j < data.length - i - 1; j++) {
+          // If user click on stop button then this function will stop performing here.
+          if (self.abort) {
+            self.abort = false;
+            changeBarColor(data[j], unsortedColor);
+            return;
+          }
+          await timer(time);
+          changeBarColor(data[j + 1], traverseColor);
+          await timer(time);
+          if (data[j] > data[j + 1]) {
+            temp = data[j];
+            data[j] = data[j + 1];
+            data[j + 1] = temp;
+            changeBarColor(data[j + 1], smallestColor);
+            swooshAudio.play();
+            swapBar(data);
+            await timer(time);
+          } else {
+            changeBarColor(data[j + 1], smallestColor);
+          }
+          changeBarColor(data[j], unsortedColor);
+        }
+        changeBarColor(data[j], sortedColor);
+      }
+
+      // after complete sorting complete making all the bar green and playing complete sound effects
+      svg.selectAll("rect").style("fill", "#56b4d3");
+
+      completeAudio.play();
+      isSorting = false;
+      isSorted = true;
+      togglePlay();
+    }
+
+    // calling async function here
+    sort(this);
+  },
+
+  // selection sort methods
+  selectionSort() {
+    // promise for async selection sort with delay
+    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+
+    // async function for selection sort algorithm
+    async function sort(self) {
       for (let i = 0; i < data.length; i++) {
+        // Stoping execution here if users wants to stop.
         if (self.abort) {
           self.abort = false;
           return;
@@ -62,104 +129,44 @@ const selectionS = {
           temp = data[i];
           data[i] = smallest;
           data[pos] = temp;
-
-          var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
+          // playing swapping sound
           swooshAudio.play();
         }
+        // swapping bar and changing smallest color
         changeBarColor(smallest, sortedColor);
         swapBar(data);
         await timer(time); // then the created Promise can be awaited
       }
+
+      // After complete sorting algorithm making all the bar green.
       svg.selectAll("rect").style("fill", "#56b4d3");
-      var completeAudio = new Audio("./sound-effects/complete.mp3");
+
       completeAudio.play();
       isSorting = false;
       isSorted = true;
       togglePlay();
     }
-
+    // calling sort function here
     sort(this);
   },
 
-  selectionSortStop() {
-    this.abort = true;
-    isSorting = false;
-  },
-};
-
-const bubbleS = {
-  bubbleSort() {
-    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-
-    async function sort(self) {
-      var temp;
-      for (let i = 0; i < data.length - 1; i++) {
-        if (self.abort) {
-          self.abort = false;
-          return;
-        }
-
-        changeBarColor(data[0], smallestColor);
-        await timer(time);
-        for (j = 0; j < data.length - i - 1; j++) {
-          if (self.abort) {
-            self.abort = false;
-            changeBarColor(data[j], unsortedColor);
-            return;
-          }
-          await timer(time);
-          changeBarColor(data[j + 1], traverseColor);
-          await timer(time);
-          if (data[j] > data[j + 1]) {
-            temp = data[j];
-            data[j] = data[j + 1];
-            data[j + 1] = temp;
-            changeBarColor(data[j + 1], smallestColor);
-            var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
-            swooshAudio.play();
-            swapBar(data);
-            await timer(time);
-          } else {
-            changeBarColor(data[j + 1], smallestColor);
-          }
-          changeBarColor(data[j], unsortedColor);
-        }
-        changeBarColor(data[j], sortedColor);
-      }
-      svg.selectAll("rect").style("fill", "#56b4d3");
-      var completeAudio = new Audio("./sound-effects/complete.mp3");
-      completeAudio.play();
-      isSorting = false;
-      isSorted = true;
-      togglePlay();
-    }
-
-    sort(this);
-  },
-
-  bubbleSortStop() {
+  // If user wants to stop the sorting process then this function will be called and sorting algorithm will be stopped immediately.
+  sortStop() {
     this.abort = true;
     isSorting = false;
   },
 };
 
 function stopSorting() {
-  const stopBubbleSort = bubbleS.bubbleSortStop.bind(bubbleS);
-  const stopSelectionSort = selectionS.selectionSortStop.bind(selectionS);
-  if (running == "bubble") {
-    stopBubbleSort();
-  } else if (running == "selection") {
-    stopSelectionSort();
-  }
+  const stopSorting = SortAlgo.sortStop.bind(SortAlgo);
+  stopSorting();
 }
 function startSorting() {
   if (getAlgo() == "bubble-sort") {
-    const bubbleSortStarted = bubbleS.bubbleSort.bind(bubbleS);
-    running = "bubble";
+    const bubbleSortStarted = SortAlgo.bubbleSort.bind(SortAlgo);
     bubbleSortStarted();
   } else if (getAlgo() == "selection-sort") {
-    const selectionSortStarted = selectionS.selectionSort.bind(selectionS);
-    running = "selection";
+    const selectionSortStarted = SortAlgo.selectionSort.bind(SortAlgo);
     selectionSortStarted();
   }
 }
@@ -189,4 +196,15 @@ document.getElementById("random-data").addEventListener("click", function () {
   svg.remove();
   var data = randomData(maxElement, dataRange);
   createChart(data);
+});
+
+document.getElementById("sound").addEventListener("click", function () {
+  if (this.classList.contains("line-through")) {
+    swooshAudio.volume = 0.3;
+    completeAudio.volume = 0.3;
+  } else {
+    swooshAudio.volume = 0;
+    completeAudio.volume = 0;
+  }
+  this.classList.toggle("line-through");
 });
