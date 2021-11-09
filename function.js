@@ -155,8 +155,17 @@ const SortAlgo = {
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
     // async function for selection sort algorithm
-    async function sort(self) {
-      function merge(arr, l, m, r) {
+    async function sort(self, arr, l, r) {
+      // l is for left index and r is
+      // right index of the sub-array
+      // of arr to be sorted */
+      if (r > l) {
+        var m = l + parseInt((r - l) / 2);
+
+        sort(this, arr, l, m);
+
+        sort(this, arr, m + 1, r);
+
         var n1 = m - l + 1;
         var n2 = r - m;
 
@@ -205,31 +214,19 @@ const SortAlgo = {
           j++;
           k++;
         }
+        swapBar(data);
       }
 
-      // l is for left index and r is
-      // right index of the sub-array
-      // of arr to be sorted */
-      function mergeSort(arr, l, r) {
-        if (l >= r) {
-          return; //returns recursively
-        }
-        var m = l + parseInt((r - l) / 2);
-        mergeSort(arr, l, m);
-        mergeSort(arr, m + 1, r);
-        merge(arr, l, m, r);
-      }
-      mergeSort(data, 0, data.length - 1);
-      swapBar(data);
-      await timer(time);
+      console.log(data);
       svg.selectAll("rect").style("fill", "#56b4d3");
       completeAudio.play();
       isSorting = false;
       isSorted = true;
       togglePlay();
     }
+
     // calling sort function here
-    sort(this);
+    sort(this, data, 0, data.length - 1);
   },
 
   // If user wants to stop the sorting process then this function will be called and sorting algorithm will be stopped immediately.
