@@ -221,6 +221,9 @@ const SortAlgo = {
       }
       mergeSort(data, 0, data.length - 1);
       swapBar(data);
+      await timer(time);
+      svg.selectAll("rect").style("fill", "#56b4d3");
+      completeAudio.play();
       isSorting = false;
       isSorted = true;
       togglePlay();
