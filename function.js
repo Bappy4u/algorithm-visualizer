@@ -21,7 +21,7 @@ completeAudio.volume = 0.3;
 // generating random data
 var data = randomData(maxElement, dataRange);
 function setSpeed() {
-  time = document.getElementById("speed").value;
+  time = 1000 - document.getElementById("speed").value;
 }
 //a d3 function for scaling height for all the data this function
 var heightScale = d3
