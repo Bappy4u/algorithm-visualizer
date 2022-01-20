@@ -2,13 +2,21 @@
 
 # <a href="https://bappy4u.github.io/algorithm-visualizer/">Live Link</a>
 
-<h3>So far I've implemented  two Sorting Algorithm only. But I'm planning to add more continuesly</h3>
+# What I used in this project
 
-<ol>
-<li><h3>Bubble Sort</h3></li>
-<li><h3>Selection Sort</h3></li>
+#### * JavaScript
+#### * Async & Await of javaScript
+#### * D3.js for data visualization
+#### * Algorithms
+#### * Html & CSS
 
-</ol>
+
+# Incomplete feature:
+
+#### * Some more Sorting algorithms visualizations
+#### * Some Searching algorithms visualizations
+#### * Linked list visualization
+#### * Tree visualization
 
 ## UI
 
