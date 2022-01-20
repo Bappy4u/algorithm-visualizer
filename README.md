@@ -2,7 +2,7 @@
 
 # <a href="https://bappy4u.github.io/algorithm-visualizer/">Live Link</a>
 
-# What I used in this project
+# What I've used in this project
 
 #### * JavaScript
 #### * Async & Await of javaScript
