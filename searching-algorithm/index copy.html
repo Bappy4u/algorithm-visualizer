@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Sorting algorithm visualizer using D3js. It will help you to understand the algorithm. I've used swapping animation for clear understanding of the algorithm."
+    />
+    <title>Sorting Algorithm Visualizer | Najmul H. Bappy</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <p class="sound"><a id="sound" href="#">Sound 🎵</a></p>
+    <h1>Sorting Algorithm Visualizer</h1>
+    <button id="random-data">Generate Random Data</button>
+    <div class="radio">
+      <form action="">
+        <label
+          ><input
+            type="radio"
+            name="algo-name"
+            value="bubble-sort"
+            checked
+          />Bubble Sort</label
+        >
+        <label>
+          <input
+            type="radio"
+            name="algo-name"
+            value="selection-sort"
+          />Selection Sort</label
+        >
+        <!---  <label>
+          <input type="radio" name="algo-name" value="merge-sort" />Merge
+          Sort</label
+        > --->
+
+        <br />
+        <br />
+        <label>
+          Speed:
+          <input
+            type="range"
+            id="speed"
+            name="speed"
+            min="100"
+            max="800"
+            value="300"
+            onchange="setSpeed()"
+          />
+        </label>
+      </form>
+      <button id="sort">Sort</button>
+      <button id="stop" class="none stop">Stop</button>
+    </div>
+    <div class="container">
+      <div class="bar-chart">
+        <div id="chart"></div>
+        <hr />
+      </div>
+    </div>
+    <footer>
+      <div class="footer-text">
+        <p>
+          Made with <span class="love">❤</span> by
+          <a href="https://nbappy.me/">Najmul H. Bappy</a>
+        </p>
+      </div>
+    </footer>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="../base.js"></script>
+    <script src="../function.js"></script>
+  </body>
+</html>
