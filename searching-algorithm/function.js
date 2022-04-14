@@ -11,7 +11,7 @@ var svg,
   unsortedColor = "#add8e6",
   sortedColor = "green",
   isSorting = false,
-  isSorted = false;
+  isFound = false;
 
 var swooshAudio = new Audio("./../sound-effects/swoosh.mp3");
 var completeAudio = new Audio("./../sound-effects/complete.mp3");
@@ -63,7 +63,7 @@ const SearchAlgo = {
 
       completeAudio.play();
       isSorting = false;
-      isSorted = true;
+      isFound = true;
     }
 
     // calling async function here
@@ -88,7 +88,9 @@ const SearchAlgo = {
         changeBarColor(data[mid], traverseColor);
         if (data[mid] == target) {
           changeBarColor(data[mid], sortedColor);
-          console.log("found");
+          isFound = true;
+          let text = target + " Found at position " + (mid + 1);
+          document.getElementById("foundNotice").innerHTML = text;
           await timer(time);
           break;
         } else if (data[mid] < target) {
@@ -100,12 +102,15 @@ const SearchAlgo = {
 
         await timer(time);
       }
+      if (!isFound) {
+        document.getElementById("foundNotice").innerHTML =
+          target + " doesn't exist.";
+      }
 
       // after complete sorting complete making all the bar green and playing complete sound effects
 
       completeAudio.play();
       isSorting = false;
-      isSorted = true;
     }
 
     // calling async function here
@@ -114,7 +119,7 @@ const SearchAlgo = {
 };
 
 function startSearching() {
-  algo = document.getElementById("get-algo").value;
+  let algo = document.getElementById("get-algo").value;
   if (algo == "linear-search") {
     const linearSearchStarted = SearchAlgo.liearSearch.bind(SearchAlgo);
     linearSearchStarted();

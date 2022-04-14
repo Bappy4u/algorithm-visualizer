@@ -101,7 +101,7 @@ function swapBar(data) {
 function togglePlay() {
   var sortElement = document.getElementById("sort");
   var stopElement = document.getElementById("stop");
-  if (isSorted) {
+  if (isFound) {
     sortElement.classList.add("none");
     stopElement.classList.add("none");
   } else {

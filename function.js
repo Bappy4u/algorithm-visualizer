@@ -11,7 +11,7 @@ var svg,
   unsortedColor = "#add8e6",
   sortedColor = "#56b4d3",
   isSorting = false,
-  isSorted = false;
+  isFound = false;
 
 var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
 var completeAudio = new Audio("./sound-effects/complete.mp3");
@@ -83,7 +83,7 @@ const SortAlgo = {
 
       completeAudio.play();
       isSorting = false;
-      isSorted = true;
+      isFound = true;
       togglePlay();
     }
 
@@ -143,7 +143,7 @@ const SortAlgo = {
 
       completeAudio.play();
       isSorting = false;
-      isSorted = true;
+      isFound = true;
       togglePlay();
     }
     // calling sort function here
@@ -221,7 +221,7 @@ const SortAlgo = {
       svg.selectAll("rect").style("fill", "#56b4d3");
       completeAudio.play();
       isSorting = false;
-      isSorted = true;
+      isFound = true;
       togglePlay();
     }
 
@@ -272,8 +272,8 @@ document.getElementById("random-data").addEventListener("click", function () {
     stopSorting();
     togglePlay();
   }
-  if (isSorted) {
-    isSorted = false;
+  if (isFound) {
+    isFound = false;
     document.getElementById("sort").classList.remove("none");
   }
   svg.remove();
