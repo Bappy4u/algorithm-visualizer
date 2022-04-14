@@ -21,16 +21,13 @@
           ><input
             type="radio"
             name="algo-name"
-            value="bubble-sort"
+            value="binary-search"
             checked
-          />Bubble Sort</label
+          />Binary Search</label
         >
         <label>
-          <input
-            type="radio"
-            name="algo-name"
-            value="selection-sort"
-          />Selection Sort</label
+          <input type="radio" name="algo-name" value="linear-search" />Linear
+          Search</label
         >
         <!---  <label>
           <input type="radio" name="algo-name" value="merge-sort" />Merge
@@ -51,9 +48,13 @@
             onchange="setSpeed()"
           />
         </label>
+        <br /><br />
+        <label for="">
+          Search For
+          <input class="input-element" id="targetValue" type="text" />
+        </label>
       </form>
-      <button id="sort">Sort</button>
-      <button id="stop" class="none stop">Stop</button>
+      <button id="search">Search</button>
     </div>
     <div class="container">
       <div class="bar-chart">
@@ -61,6 +62,8 @@
         <hr />
       </div>
     </div>
+    <div class="container foundNotice"></div>
+
     <footer>
       <div class="footer-text">
         <p>

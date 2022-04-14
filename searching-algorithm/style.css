@@ -39,6 +39,9 @@ button {
   padding: 2px 30px;
   border: none;
 }
+.input-element {
+  height: 25px;
+}
 
 button {
   background-image: linear-gradient(
