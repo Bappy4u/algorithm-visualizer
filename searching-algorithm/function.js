@@ -9,12 +9,12 @@ var svg,
   traverseColor = "#ffcaa1",
   smallestColor = "#ab87ff",
   unsortedColor = "#add8e6",
-  sortedColor = "#56b4d3",
+  sortedColor = "green",
   isSorting = false,
   isSorted = false;
 
-var swooshAudio = new Audio("./sound-effects/swoosh.mp3");
-var completeAudio = new Audio("./sound-effects/complete.mp3");
+var swooshAudio = new Audio("./../sound-effects/swoosh.mp3");
+var completeAudio = new Audio("./../sound-effects/complete.mp3");
 swooshAudio.volume = 0.3;
 completeAudio.volume = 0.3;
 
@@ -32,249 +32,111 @@ var heightScale = d3
 // initialized a chart with random value
 createChart(data);
 
-// javascript objects for performing different sorting algorithm
-const SortAlgo = {
-  // bubble sort methods to perform bubble sort algorithm
-  bubbleSort() {
+const SearchAlgo = {
+  liearSearch() {
     // promise for async bubble sort with delay
 
     const timer = (ms) => new Promise((res) => setTimeout(res, ms));
     // async function for bubble sort
 
-    async function sort(self) {
+    async function search(self) {
       var temp;
       for (let i = 0; i < data.length - 1; i++) {
         // If user click on stop button then this function will stop performing here.
-        if (self.abort) {
-          self.abort = false;
-          return;
-        }
+
         // changing initial smallest bar color
-        changeBarColor(data[0], smallestColor);
         await timer(time);
-        for (j = 0; j < data.length - i - 1; j++) {
-          // If user click on stop button then this function will stop performing here.
-          if (self.abort) {
-            self.abort = false;
-            changeBarColor(data[j], unsortedColor);
-            return;
-          }
+        changeBarColor(data[i], traverseColor);
+        console.log(data[i]);
+        await timer(time);
+        console.log("Searching");
+
+        if (data[i] == target) {
+          changeBarColor(data[i], sortedColor);
+          console.log("found");
           await timer(time);
-          changeBarColor(data[j + 1], traverseColor);
-          await timer(time);
-          if (data[j] > data[j + 1]) {
-            temp = data[j];
-            data[j] = data[j + 1];
-            data[j + 1] = temp;
-            changeBarColor(data[j + 1], smallestColor);
-            swooshAudio.play();
-            swapBar(data);
-            await timer(time);
-          } else {
-            changeBarColor(data[j + 1], smallestColor);
-          }
-          changeBarColor(data[j], unsortedColor);
+          break;
         }
-        changeBarColor(data[j], sortedColor);
       }
 
       // after complete sorting complete making all the bar green and playing complete sound effects
-      svg.selectAll("rect").style("fill", "#56b4d3");
 
       completeAudio.play();
       isSorting = false;
       isSorted = true;
-      togglePlay();
     }
 
     // calling async function here
-    sort(this);
+    search(this);
   },
 
-  // selection sort methods
-  selectionSort() {
-    // promise for async selection sort with delay
-    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+  binarySearch() {
+    // promise for async bubble sort with delay
 
-    // async function for selection sort algorithm
-    async function sort(self) {
-      for (let i = 0; i < data.length; i++) {
-        // Stoping execution here if users wants to stop.
-        if (self.abort) {
-          self.abort = false;
-          return;
-        }
-        smallest = data[i];
-        pos = i;
-        changeBarColor(smallest, smallestColor);
+    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+    // async function for bubble sort
+
+    async function search(self) {
+      console.log(target);
+      let l = 0,
+        r = data.length - 1,
+        mid;
+      while (l <= r) {
+        // If user click on stop button then this function will stop performing here.
+        mid = (l + r) / 2;
         await timer(time);
-        for (var j = i + 1; j < data.length; j++) {
-          if (self.abort) {
-            self.abort = false;
-            return;
-          }
-          changeBarColor(data[j], traverseColor);
-          if (smallest > data[j]) {
-            await timer(time);
-            changeBarColor(smallest, unsortedColor);
-            smallest = data[j];
-            pos = j;
-          }
-
-          changeBarColor(smallest, smallestColor);
+        changeBarColor(data[mid], traverseColor);
+        if (data[mid] == target) {
+          changeBarColor(data[mid], sortedColor);
+          console.log("found");
           await timer(time);
-          changeBarColor(data[j], unsortedColor);
+          break;
+        } else if (data[mid] < target) {
+          l = mid + 1;
+        } else {
+          r = mid - 1;
         }
-        if (data[i] != smallest) {
-          temp = data[i];
-          data[i] = smallest;
-          data[pos] = temp;
-          // playing swapping sound
-          swooshAudio.play();
-        }
-        // swapping bar and changing smallest color
-        changeBarColor(smallest, sortedColor);
-        swapBar(data);
-        await timer(time); // then the created Promise can be awaited
+        // changing initial smallest bar color
+
+        await timer(time);
       }
 
-      // After complete sorting algorithm making all the bar green.
-      svg.selectAll("rect").style("fill", "#56b4d3");
+      // after complete sorting complete making all the bar green and playing complete sound effects
 
       completeAudio.play();
       isSorting = false;
       isSorted = true;
-      togglePlay();
-    }
-    // calling sort function here
-    sort(this);
-  },
-
-  //Merge Sort methods to perform merge sort algorithm
-  mergeSort() {
-    const timer = (ms) => new Promise((res) => setTimeout(res, ms));
-
-    // async function for selection sort algorithm
-    async function sort(self, arr, l, r) {
-      // l is for left index and r is
-      // right index of the sub-array
-      // of arr to be sorted */
-      if (r > l) {
-        var m = l + parseInt((r - l) / 2);
-
-        sort(this, arr, l, m);
-
-        sort(this, arr, m + 1, r);
-
-        var n1 = m - l + 1;
-        var n2 = r - m;
-
-        // Create temp arrays
-        var L = new Array(n1);
-        var R = new Array(n2);
-
-        // Copy data to temp arrays L[] and R[]
-        for (var i = 0; i < n1; i++) L[i] = arr[l + i];
-        for (var j = 0; j < n2; j++) R[j] = arr[m + 1 + j];
-
-        // Merge the temp arrays back into arr[l..r]
-
-        // Initial index of first subarray
-        var i = 0;
-
-        // Initial index of second subarray
-        var j = 0;
-
-        // Initial index of merged subarray
-        var k = l;
-
-        while (i < n1 && j < n2) {
-          if (L[i] <= R[j]) {
-            arr[k] = L[i];
-            i++;
-          } else {
-            arr[k] = R[j];
-            j++;
-          }
-          k++;
-        }
-
-        // Copy the remaining elements of
-        // L[], if there are any
-        while (i < n1) {
-          arr[k] = L[i];
-          i++;
-          k++;
-        }
-
-        // Copy the remaining elements of
-        // R[], if there are any
-        while (j < n2) {
-          arr[k] = R[j];
-          j++;
-          k++;
-        }
-        swapBar(data);
-      }
-
-      console.log(data);
-      svg.selectAll("rect").style("fill", "#56b4d3");
-      completeAudio.play();
-      isSorting = false;
-      isSorted = true;
-      togglePlay();
     }
 
-    // calling sort function here
-    sort(this, data, 0, data.length - 1);
-  },
-
-  // If user wants to stop the sorting process then this function will be called and sorting algorithm will be stopped immediately.
-  sortStop() {
-    this.abort = true;
-    isSorting = false;
+    // calling async function here
+    search(this);
   },
 };
 
-function stopSorting() {
-  const stopSorting = SortAlgo.sortStop.bind(SortAlgo);
-  stopSorting();
-}
-function startSorting() {
-  if (getAlgo() == "bubble-sort") {
-    const bubbleSortStarted = SortAlgo.bubbleSort.bind(SortAlgo);
-    bubbleSortStarted();
-  } else if (getAlgo() == "selection-sort") {
-    const selectionSortStarted = SortAlgo.selectionSort.bind(SortAlgo);
-    selectionSortStarted();
+function startSearching() {
+  if (getAlgo() == "linear-search") {
+    const linearSearchStarted = SearchAlgo.liearSearch.bind(SearchAlgo);
+    linearSearchStarted();
+  } else if (getAlgo() == "binary-search") {
+    const binarySearchStarted = SearchAlgo.binarySearch.bind(SearchAlgo);
+    binarySearchStarted();
   } else if (getAlgo() == "merge-sort") {
     const mergeSortStarted = SortAlgo.mergeSort.bind(SortAlgo);
     mergeSortStarted();
   }
 }
 
-document.getElementById("sort").addEventListener("click", function () {
-  isSorting = true;
-  startSorting();
-  togglePlay();
-});
+document.getElementById("search").addEventListener("click", function () {
+  target = parseInt(document.getElementById("targetValue").value);
 
-document.getElementById("stop").addEventListener("click", function () {
-  if (isSorting) {
-    stopSorting();
-    togglePlay();
+  if (isNaN(target)) {
+    alert("Please enter a valid number");
+  } else {
+    startSearching();
   }
 });
 
 document.getElementById("random-data").addEventListener("click", function () {
-  if (isSorting) {
-    stopSorting();
-    togglePlay();
-  }
-  if (isSorted) {
-    isSorted = false;
-    document.getElementById("sort").classList.remove("none");
-  }
   svg.remove();
   var data = randomData(maxElement, dataRange);
   createChart(data);

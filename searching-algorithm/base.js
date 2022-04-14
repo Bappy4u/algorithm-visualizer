@@ -1,5 +1,3 @@
-// class for sorting
-
 //get selected algorithm
 function getAlgo() {
   var algo = document.getElementsByName("algo-name");
@@ -32,6 +30,8 @@ function randomData(max, range) {
       n++;
     }
   }
+  data.sort((a, b) => a - b);
+  console.log(data);
   return data;
 }
 
