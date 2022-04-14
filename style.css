@@ -4,67 +4,17 @@
 body {
   min-height: 100vh;
 }
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+
 .bar-chart {
   margin-top: 5vh;
   background-color: #eee;
   padding: 50px 20px 30px 20px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
-
-h1 {
+.bar-chart #chart {
   text-align: center;
-  font-family: sans-serif;
-  padding: 0;
-  margin: 30px 0 0 0;
-}
-button {
-  display: block;
-  margin: auto;
-
-  padding: 5px 20px;
-  background: steelblue;
-  color: rgb(218, 238, 105);
-  font-size: 15px;
-  cursor: pointer;
-  font-weight: 600;
-}
-button {
-  margin: auto;
-  margin-top: 20px;
-  padding: 2px 30px;
-  border: none;
 }
 
-button {
-  background-image: linear-gradient(
-    to right,
-    #348f50 0%,
-    #56b4d3 51%,
-    #348f50 100%
-  );
-}
-button {
-  padding: 10px 30px;
-  text-align: center;
-  text-transform: uppercase;
-  transition: 0.5s;
-  background-size: 200% auto;
-  color: white;
-  box-shadow: 0 0 20px #eee;
-  border-radius: 10px;
-  display: block;
-}
-
-button:hover {
-  background-position: right center; /* change the direction of the change here */
-  color: #fff;
-  text-decoration: none;
-}
 form {
   margin-top: 20px;
   text-align: center;
@@ -82,14 +32,7 @@ rect:hover {
 .none {
   display: none;
 }
-.stop {
-  background-image: linear-gradient(
-    to right,
-    #ad4a04 0%,
-    #d36756 51%,
-    #8f5a34 100%
-  );
-}
+
 footer {
   width: 100%;
   color: #8c8c8c;

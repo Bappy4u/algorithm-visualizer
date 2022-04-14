@@ -1,11 +1,7 @@
 //get selected algorithm
 function getAlgo() {
-  var algo = document.getElementsByName("algo-name");
-  for (var i = 0; i < algo.length; i++) {
-    if (algo[i].checked) {
-      return algo[i].value;
-    }
-  }
+  algo = document.getElementById("get-algo").value;
+  return algo;
 }
 
 // function for changing specific bar color filtering with data

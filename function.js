@@ -241,13 +241,14 @@ function stopSorting() {
   stopSorting();
 }
 function startSorting() {
-  if (getAlgo() == "bubble-sort") {
+  let algo = document.getElementById("get-algo").value;
+  if (algo == "bubble-sort") {
     const bubbleSortStarted = SortAlgo.bubbleSort.bind(SortAlgo);
     bubbleSortStarted();
-  } else if (getAlgo() == "selection-sort") {
+  } else if (algo == "selection-sort") {
     const selectionSortStarted = SortAlgo.selectionSort.bind(SortAlgo);
     selectionSortStarted();
-  } else if (getAlgo() == "merge-sort") {
+  } else if (algo == "merge-sort") {
     const mergeSortStarted = SortAlgo.mergeSort.bind(SortAlgo);
     mergeSortStarted();
   }

@@ -114,13 +114,14 @@ const SearchAlgo = {
 };
 
 function startSearching() {
-  if (getAlgo() == "linear-search") {
+  algo = document.getElementById("get-algo").value;
+  if (algo == "linear-search") {
     const linearSearchStarted = SearchAlgo.liearSearch.bind(SearchAlgo);
     linearSearchStarted();
-  } else if (getAlgo() == "binary-search") {
+  } else if (algo == "binary-search") {
     const binarySearchStarted = SearchAlgo.binarySearch.bind(SearchAlgo);
     binarySearchStarted();
-  } else if (getAlgo() == "merge-sort") {
+  } else if (algo == "merge-sort") {
     const mergeSortStarted = SortAlgo.mergeSort.bind(SortAlgo);
     mergeSortStarted();
   }
