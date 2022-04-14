@@ -1,15 +1,3 @@
-// class for sorting
-class sortData {
-  constructor(data) {
-    this.data = data;
-  }
-  selectionSort() {}
-  bubbleSort() {}
-  stopSort() {
-    return false;
-  }
-}
-
 //get selected algorithm
 function getAlgo() {
   var algo = document.getElementsByName("algo-name");
