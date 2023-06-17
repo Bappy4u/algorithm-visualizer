@@ -1,0 +1,20 @@
+{
+  "name": "algo",
+  "version": "1.0.0",
+  "description": "* Sorting\r   * Bubble Sort\r   * Insertion Sort\r * Searching\r   * Linear Search\r   * Binary Search",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bappy4u/algorithm-visualizer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bappy4u/algorithm-visualizer/issues"
+  },
+  "homepage": "https://github.com/Bappy4u/algorithm-visualizer#readme"
+}
