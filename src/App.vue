@@ -1,15 +1,14 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Algorithm-visualizer msg="Welcome to Algorithm Visualizer"/>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AlgorithmVisualizer from './components/AlgorithmVisualizer.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    AlgorithmVisualizer
   }
 }
 </script>
