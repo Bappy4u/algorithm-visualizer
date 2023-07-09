@@ -1,0 +1,25 @@
+<template>
+  <Algorithm-visualizer msg="Welcome to Algorithm Visualizer"/>
+</template>
+
+<script>
+import AlgorithmVisualizer from './components/AlgorithmVisualizer.vue'
+
+export default {
+  name: 'App',
+  components: {
+    AlgorithmVisualizer
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
