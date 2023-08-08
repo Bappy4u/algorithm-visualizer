@@ -2,12 +2,24 @@
     <div>
         <h1>Linked List</h1>
         <div ref="circleContainer"></div>
-        <form v-if="showInputForm" @submit.prevent="formSubmitAction">
-            <input v-model="insertedValue" type="number" name="Number" id="" placeholder="Enter Number">
-            <button type="submit" :="insertedValue">Add</button>
+        <div v-if="showSuccessResult" class="success-message">
+            Search result found at: "{{ result }}"
+        </div>
+
+        <div v-if="showFailureResult" class="fail-message">
+            Searched item not found!
+        </div>
+        <hr>
+        <form v-if="showInputForm" @submit.prevent="insertFormSubmitAction">
+            <input v-model="insertedValue" type="number" name="Number" placeholder="Enter Number">
+            <button type="submit">Add</button>
         </form>
-        <button @click="change">Animation</button>
-        <button @click="toggleForm">Insert</button>
+        <form v-if="showSearchForm" @submit.prevent="searchIntoLinkedList">
+            <input v-model="targetValue" type="number" name="Number" placeholder="Enter Number">
+            <button type="submit">Search</button>
+        </form>
+        <button @click="toggleSearchForm">Search</button>
+        <button @click="toggleInsertForm">Insert</button>
     </div>
 </template>
 
@@ -16,6 +28,7 @@
         constructor(data) {
             this.data = data;
             this.next = null;
+            this.element = null;
         }
     }
 
@@ -24,8 +37,9 @@
             this.head = null;
         }
 
-        append(data) {
+        append(data, element) {
             const newNode = new Node(data);
+            newNode.element = element;
             if (!this.head) {
                 this.head = newNode;
                 return;
@@ -55,13 +69,18 @@
         data() {
             return {
                 linkedList: undefined,
+                result: "",
+                showSuccessResult: false,
+                showFailureResult: false,
                 xAxis: 20,
                 arrowXAxis: 0,
                 circleRadius: 5,
                 elements: [],
                 circleContainer: undefined,
                 showInputForm: false,
-                insertedValue: undefined,
+                showSearchForm: false,
+                targetValue: null,
+                insertedValue: null,
             }
         },
 
@@ -82,16 +101,41 @@
 
             },
 
-            toggleForm() {
+            toggleInsertForm() {
+                this.showSuccessResult = false;
+                this.showFailureResult = false;
                 this.showInputForm = !this.showInputForm;
+                if (this.showSearchForm) {
+                    this.showSearchForm = !this.showSearchForm;
+                }
+
+            },
+            toggleSearchForm() {
+                this.showSuccessResult = false;
+                this.showFailureResult = false;
+                this.showSearchForm = !this.showSearchForm;
+                if (this.showInputForm) {
+                    this.showInputForm = !this.showInputForm;
+                }
             },
 
-            formSubmitAction() {
+            insertFormSubmitAction() {
                 if (this.insertedValue > 0) {
+
                     this.appendIntoLinkedList(this.insertedValue);
-                    this.createArrow((this.xAxis - this.circleRadius * 20) + 70);
-                    this.createCircle(this.insertedValue);
                     this.showInputForm = false;
+                    this.insertedValue = null;
+                } else {
+                    console.error("You've added negative number");
+                }
+            },
+
+            searchFormSubmitAction() {
+                if (this.insertedValue > 0) {
+
+                    this.appendIntoLinkedList(this.insertedValue);
+                    this.showInputForm = false;
+                    this.insertedValue = null;
                 } else {
                     console.error("You've added negative number");
                 }
@@ -117,12 +161,14 @@
                     .attr('dy', '.4em') // Vertical alignment adjustment
                     .attr('text-anchor', 'middle') // Horizontal alignment
                     .text(num);
-                if(createArrow){
-                    this.createArrow(this.xAxis+70);
+                if (createArrow) {
+                    this.createArrow(this.xAxis + 70);
                 }
                 this.elements.push({circle: circle, text: text});
 
                 this.xAxis += this.circleRadius * 20;
+
+                return circle;
 
                 //     this.circleContainer.append('circle')
                 //         .attr('cx', 90)
@@ -133,7 +179,7 @@
                 //
             },
 
-            createArrow(arrowX){
+            createArrow(arrowX) {
                 const arrowLength = 20;
                 const arrowY = 100;
                 // Line 1: Horizontal line
@@ -166,32 +212,88 @@
 
             appendIntoLinkedList(num, pos) {
                 if (!pos) {
-                    this.linkedList.append(num);
+                    const ele = this.createCircle(num);
+                    this.createArrow((this.xAxis - this.circleRadius * 20) + 70);
+                    this.linkedList.append(num, ele);
                 }
             },
 
-            generateLinkedList() {
-                let current = this.linkedList.head;
-                while (current) {
-                    this.createCircle(current.data, current.next);
-                    current = current.next;
+            async searchIntoLinkedList() {
+                this.showSuccessResult = false;
+                this.showFailureResult = false;
+                if (this.targetValue > 0) {
+                    this.showSearchForm = false;
+                    let current = this.linkedList.head;
+                    let found;
+                    let pos = 1;
+                    while (current) {
+                        found = current.data == this.targetValue;
+                        current.element.transition()
+                            .duration(1000).attr('fill', "pink");
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        if (found) {
+                            current.element.transition()
+                                .duration(1000).attr('fill', "green");
+                            break;
+                        }
+                        current = current.next;
+                        pos++;
+                    }
+                    if (found) {
+                        this.result = pos;
+                        this.showSuccessResult = true;
+                        console.log("target found");
+                    } else {
+                        this.showFailureResult = true;
+                    }
+                    this.targetValue = null;
+                }
+            },
+
+            generateLinkedList(nums) {
+                for (const n of nums) {
+                    this.appendIntoLinkedList(n);
                 }
             }
         },
         mounted() {
             this.createContainer();
             this.linkedList = new LinkedList();
-            this.linkedList.append(1);
-            this.linkedList.append(2);
-            this.linkedList.append(3);
-            this.linkedList.append(5);
-            this.linkedList.append(7);
-            this.generateLinkedList();
-
+            this.generateLinkedList([1, 2, 3])
         },
     }
 </script>
 
 <style scoped>
+    .success-message {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
 
+    .fail-message {
+        background-color: #af3e2e;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    button {
+        background-color: #3c3f41;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
 </style>
