@@ -183,7 +183,7 @@
                 const arrowLength = 20;
                 const arrowY = 100;
                 // Line 1: Horizontal line
-                this.circleContainer.append('line')
+                const line1 = this.circleContainer.append('line')
                     .attr('x1', arrowX - arrowLength - 20)
                     .attr('y1', arrowY)
                     .attr('x2', arrowX)
@@ -192,7 +192,7 @@
                     .attr('stroke-width', 2);
 
                 // Line 2: Diagonal line (left)
-                this.circleContainer.append('line')
+                const line2 = this.circleContainer.append('line')
                     .attr('x1', arrowX - 10)
                     .attr('y1', arrowY - 5)
                     .attr('x2', arrowX - arrowLength + 20)
@@ -201,20 +201,22 @@
                     .attr('stroke-width', 2);
 
                 // Line 3: Diagonal line (right)
-                this.circleContainer.append('line')
+                const line3 = this.circleContainer.append('line')
                     .attr('x1', arrowX - 10)
                     .attr('y1', arrowY + 5)
                     .attr('x2', arrowX - arrowLength + 20)
                     .attr('y2', arrowY)
                     .attr('stroke', 'black')
                     .attr('stroke-width', 2);
+
+                return [line1, line2, line3];
             },
 
             appendIntoLinkedList(num, pos) {
                 if (!pos) {
-                    const ele = this.createCircle(num);
-                    this.createArrow((this.xAxis - this.circleRadius * 20) + 70);
-                    this.linkedList.append(num, ele);
+                    const circle = this.createCircle(num);
+                    const line = this.createArrow((this.xAxis - this.circleRadius * 20) + 70);
+                    this.linkedList.append(num, {circle: circle, lines: line});
                 }
             },
 
@@ -228,11 +230,15 @@
                     let pos = 1;
                     while (current) {
                         found = current.data == this.targetValue;
-                        current.element.transition()
+                        current.element.circle.transition()
                             .duration(1000).attr('fill', "pink");
+                        await new Promise(resolve => setTimeout(resolve, 1200));
+                        for(const line of current.element.lines){
+                            line.transition().duration(300).attr('stroke', "pink");
+                        }
                         await new Promise(resolve => setTimeout(resolve, 1000));
                         if (found) {
-                            current.element.transition()
+                            current.element.circle.transition()
                                 .duration(1000).attr('fill', "green");
                             break;
                         }
