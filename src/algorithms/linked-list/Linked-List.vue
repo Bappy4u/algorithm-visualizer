@@ -3,7 +3,7 @@
         <h1>Linked List</h1>
         <div ref="circleContainer"></div>
         <div v-if="showSuccessResult" class="success-message">
-            Search result found at: "{{ result }}"
+            Searched item {{ targetValue }} found at: "{{ result }}"
         </div>
 
         <div v-if="showFailureResult" class="fail-message">
@@ -28,7 +28,7 @@
         constructor(data) {
             this.data = data;
             this.next = null;
-            this.element = null;
+            this.element = {};
         }
     }
 
@@ -39,8 +39,9 @@
 
         append(data, element) {
             const newNode = new Node(data);
-            newNode.element = element;
+            newNode.element.circle = element.circle;
             if (!this.head) {
+                newNode.element.lines = element.lines;
                 this.head = newNode;
                 return;
             }
@@ -49,6 +50,7 @@
             while (current.next) {
                 current = current.next;
             }
+            current.element.lines = element.lines;
             current.next = newNode;
         }
 
@@ -215,7 +217,11 @@
             appendIntoLinkedList(num, pos) {
                 if (!pos) {
                     const circle = this.createCircle(num);
-                    const line = this.createArrow((this.xAxis - this.circleRadius * 20) + 70);
+                    let line;
+                    if(this.linkedList.head){
+                        line = this.createArrow((this.xAxis - this.circleRadius * 40) + 70);
+                    }
+
                     this.linkedList.append(num, {circle: circle, lines: line});
                 }
             },
@@ -231,16 +237,19 @@
                     while (current) {
                         found = current.data == this.targetValue;
                         current.element.circle.transition()
-                            .duration(1000).attr('fill', "pink");
-                        await new Promise(resolve => setTimeout(resolve, 1200));
-                        for(const line of current.element.lines){
-                            line.transition().duration(300).attr('stroke', "pink");
-                        }
-                        await new Promise(resolve => setTimeout(resolve, 1000));
+                            .duration(500).attr('fill', "pink");
+                        await new Promise(resolve => setTimeout(resolve, 600));
                         if (found) {
                             current.element.circle.transition()
                                 .duration(1000).attr('fill', "green");
                             break;
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 600));
+                        if(current.next){
+                            for (const line of current.element.lines) {
+                                line.transition().duration(300).attr('stroke', "pink");
+                            }
+                            await new Promise(resolve => setTimeout(resolve, 300));
                         }
                         current = current.next;
                         pos++;
