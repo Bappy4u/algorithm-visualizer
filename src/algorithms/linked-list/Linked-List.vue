@@ -18,8 +18,13 @@
             <input v-model="targetValue" type="number" name="Number" placeholder="Enter Number">
             <button type="submit">Search</button>
         </form>
+        <form v-if="showDeleteForm" @submit.prevent="removeItemFromLinkedList">
+            <input v-model="targetValue" type="number" name="Number" placeholder="Enter Number">
+            <button type="submit">Delete</button>
+        </form>
         <button @click="toggleSearchForm">Search</button>
         <button @click="toggleInsertForm">Insert</button>
+        <button @click="toggleDeleteForm">Delete Node</button>
     </div>
 </template>
 
@@ -39,7 +44,8 @@
 
         append(data, element) {
             const newNode = new Node(data);
-            newNode.element.circle = element.circle;
+            newNode.element.circle = element.circle.circle;
+            newNode.element.text = element.circle.text;
             if (!this.head) {
                 newNode.element.lines = element.lines;
                 this.head = newNode;
@@ -81,6 +87,7 @@
                 circleContainer: undefined,
                 showInputForm: false,
                 showSearchForm: false,
+                showDeleteForm: false,
                 targetValue: null,
                 insertedValue: null,
             }
@@ -100,39 +107,43 @@
                         .duration(1000) // Animation duration in milliseconds
                         .attr('fill', 'rgba(0, 255, 0, 0.8)');
                 }
-
             },
 
             toggleInsertForm() {
                 this.showSuccessResult = false;
                 this.showFailureResult = false;
                 this.showInputForm = !this.showInputForm;
-                if (this.showSearchForm) {
-                    this.showSearchForm = !this.showSearchForm;
-                }
-
+                this.hideDeleteForm();
+                this.hideSearchForm();
             },
+
             toggleSearchForm() {
                 this.showSuccessResult = false;
                 this.showFailureResult = false;
                 this.showSearchForm = !this.showSearchForm;
-                if (this.showInputForm) {
-                    this.showInputForm = !this.showInputForm;
-                }
+                this.hideDeleteForm();
+                this.hideInsertForm();
+            },
+
+            toggleDeleteForm() {
+                this.showSuccessResult = false;
+                this.showFailureResult = false;
+                this.hideInsertForm();
+                this.hideSearchForm();
+                this.showDeleteForm = !this.showDeleteForm;
+            },
+
+            hideDeleteForm(){
+                this.showDeleteForm = false;
+            },
+            hideInsertForm(){
+                this.showInputForm = false;
+            },
+            hideSearchForm(){
+                this.showSearchForm = false;
             },
 
             insertFormSubmitAction() {
-                if (this.insertedValue > 0) {
-
-                    this.appendIntoLinkedList(this.insertedValue);
-                    this.showInputForm = false;
-                    this.insertedValue = null;
-                } else {
-                    console.error("You've added negative number");
-                }
-            },
-
-            searchFormSubmitAction() {
                 if (this.insertedValue > 0) {
 
                     this.appendIntoLinkedList(this.insertedValue);
@@ -170,7 +181,7 @@
 
                 this.xAxis += this.circleRadius * 20;
 
-                return circle;
+                return {circle: circle, text: text};
 
                 //     this.circleContainer.append('circle')
                 //         .attr('cx', 90)
@@ -218,12 +229,49 @@
                 if (!pos) {
                     const circle = this.createCircle(num);
                     let line;
-                    if(this.linkedList.head){
+                    if (this.linkedList.head) {
                         line = this.createArrow((this.xAxis - this.circleRadius * 40) + 70);
                     }
 
                     this.linkedList.append(num, {circle: circle, lines: line});
                 }
+            },
+
+            removeItemFromLinkedList() {
+                let current = this.linkedList.head;
+
+                while (current) {
+                    if (current.data == this.targetValue) {
+                        console.log("Item found to delete");
+                        const currentCircleXAxis = parseFloat( current.element.circle.attr('cx'));
+                        const currentTextX = parseFloat( current.element.text.attr('x'));
+                        current.element.circle.remove();
+                        current.element.text.remove();
+
+                        for(const line of current.element.lines){
+                            line.remove();
+                        }
+                        current.next?.element.circle.transition()
+                            .duration(1000)
+                            .attr('cx', currentCircleXAxis);
+                        current.next?.element.text.transition()
+                            .duration(1000)
+                            .attr('x', currentTextX);
+                        current.data = current.next.data;
+                        current.element = current.next.element;
+                        if (current.next) {
+                            current.next = current.next.next;
+                        } else {
+                            current.next = null;
+                        }
+                        console.log()
+
+
+                        break;
+                    }
+                    current = current.next;
+                }
+                this.targetValue = null;
             },
 
             async searchIntoLinkedList() {
@@ -245,7 +293,7 @@
                             break;
                         }
                         await new Promise(resolve => setTimeout(resolve, 600));
-                        if(current.next){
+                        if (current.next) {
                             for (const line of current.element.lines) {
                                 line.transition().duration(300).attr('stroke', "pink");
                             }
