@@ -237,36 +237,50 @@
                 }
             },
 
+
+            deleteNode(node, cx, x){
+                if(node){
+                    const currentCircleXAxis = parseFloat(node.element.circle.attr('cx'));
+                    const currentTextX = parseFloat(node.element.text.attr('x'));
+                    console.log(cx, currentCircleXAxis, x, currentTextX);
+                        node.element.circle.transition()
+                            .duration(1000)
+                            .attr('cx', cx);
+
+                        node.element.text.transition()
+                            .duration(1000)
+                            .attr('x', x);
+                        if(node.element.lines){
+                            for(const line of node.element.lines){
+                                line.attr('x1', currentTextX);
+                            }
+                        }
+                    this.deleteNode(node.next, currentCircleXAxis, currentTextX)
+                }
+
+                return;
+
+            },
+
             removeItemFromLinkedList() {
                 let current = this.linkedList.head;
 
                 while (current) {
                     if (current.data == this.targetValue) {
+                        const currentCircleXAxis = parseFloat(current.element.circle.attr('cx'));
+                        const currentTextX = parseFloat(current.element.text.attr('x'));
                         console.log("Item found to delete");
-                        const currentCircleXAxis = parseFloat( current.element.circle.attr('cx'));
-                        const currentTextX = parseFloat( current.element.text.attr('x'));
                         current.element.circle.remove();
                         current.element.text.remove();
+                        if(current.next) {
+                            current.data = current.next.data;
 
-                        for(const line of current.element.lines){
-                            line.remove();
+                            for (const line of current.element.lines) {
+                                line.remove();
+                            }
+                            current.element = current.next.element;
+                            this.deleteNode(current.next, currentCircleXAxis, currentTextX);
                         }
-                        current.next?.element.circle.transition()
-                            .duration(1000)
-                            .attr('cx', currentCircleXAxis);
-                        current.next?.element.text.transition()
-                            .duration(1000)
-                            .attr('x', currentTextX);
-                        current.data = current.next.data;
-                        current.element = current.next.element;
-                        if (current.next) {
-                            current.next = current.next.next;
-                        } else {
-                            current.next = null;
-                        }
-                        console.log()
-
-
                         break;
                     }
                     current = current.next;
