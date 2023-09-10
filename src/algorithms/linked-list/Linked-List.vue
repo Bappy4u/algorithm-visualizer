@@ -63,7 +63,7 @@ class LinkedList {
   display() {
     let current = this.head;
     while (current) {
-      console.log(current.data);
+      console.log("data: ", current.data, " Element: ", current.element);
       current = current.next;
     }
   }
@@ -155,7 +155,6 @@ export default {
     },
 
     createCircle(num, createArrow) {
-
       const finalRadius = 20;
 
       const circle = this.circleContainer.append('circle')
@@ -182,14 +181,6 @@ export default {
       this.xAxis += this.circleRadius * 20;
 
       return {circle: circle, text: text};
-
-      //     this.circleContainer.append('circle')
-      //         .attr('cx', 90)
-      //         .attr('cy', 100)
-      //         .attr('r', finalRadius)
-      //         .attr('fill', 'red');
-      //
-      //
     },
 
     createArrow(groupX) {
@@ -227,9 +218,11 @@ export default {
     },
 
     appendIntoLinkedList(num, pos) {
+
       if (!pos) {
         const circle = this.createCircle(num);
         let arrow;
+
         if (this.linkedList.head) {
           arrow = this.createArrow((this.xAxis - this.circleRadius * 40) + 70);
         }
@@ -238,100 +231,115 @@ export default {
       }
     },
 
-
-    deleteNode(node, cx, x, arrowX) {
-      if (node) {
-        const currentCircleXAxis = parseFloat(node.element.circle.attr('cx'));
-        const currentTextX = parseFloat(node.element.text.attr('x'));
-        let nextArrow;
-        if (node.element.arrow) {
-          nextArrow = parseFloat(node.element.arrow.attr('transform').split('(')[1].split(',')[0]);
-        }
-
-        console.log(cx, currentCircleXAxis, x, currentTextX);
-        node.element.circle.transition()
-            .duration(1000)
-            .attr('cx', cx);
-
-        node.element.text.transition()
-            .duration(1000)
-            .attr('x', x);
-        if (node.element.arrow) {
-          console.log("arrowx:", nextArrow, arrowX);
-          node.element.arrow.attr('transform', `translate(${arrowX}, 0)`);
-          console.log(parseFloat(node.element.arrow.attr('transform').replace(/[^\d.-]/g, '')));
-        }
-        this.deleteNode(node.next, currentCircleXAxis, currentTextX, nextArrow)
-      }
-
-    },
-
     removeItemFromLinkedList() {
       let current = this.linkedList.head;
       let prev = current;
       while (current) {
 
         if (current.data === this.targetValue) {
-          const currentCircleXAxis = parseFloat(current.element.circle.attr('cx'));
-          const currentTextX = parseFloat(current.element.text.attr('x'));
+          let currentCircleXAxis = parseFloat(current.element.circle.attr('cx'));
+          let currentTextX = parseFloat(current.element.text.attr('x'));
           let currentArrowX;
+
           if (current.element.arrow) {
             currentArrowX = parseFloat(current.element.arrow.attr('transform').replace(/[^\d.-]/g, '')) / 10;
-          } else if (prev) {
+          } else if (prev.element.arrow) {
             prev.element.arrow.remove();
+            prev.element.arrow = null;
           }
           current.element.circle.remove();
           current.element.text.remove();
-          if (current.next) {
-            current.data = current.next.data;
 
+          if (current.next) {
             if (current.element.arrow) {
-              current.element.arrow.remove()
+              current.element.arrow.remove();
+              current.element.arrow = null;
             }
-            current.element = current.next.element;
-            this.deleteNode(current.next, currentCircleXAxis, currentTextX, currentArrowX);
+
+            if (current === this.linkedList.head) {
+              this.linkedList.head = current.next;
+            } else {
+              prev.next = current.next;
+            }
+
+            current = current.next;
+            while (current) {
+              current.element.circle.transition()
+                  .duration(1000)
+                  .attr('cx', currentCircleXAxis);
+
+              current.element.text.transition()
+                  .duration(1000)
+                  .attr('x', currentTextX);
+
+              if (current.element.arrow) {
+                current.element.arrow.attr('transform', `translate(${currentArrowX}, 0)`);
+              }
+
+              currentCircleXAxis = parseFloat(current.element.circle.attr('cx'));
+              currentTextX = parseFloat(current.element.text.attr('x'));
+
+              if (current.element.arrow) {
+                currentArrowX = parseFloat(current.element.arrow.attr('transform').split('(')[1].split(',')[0]);
+              }
+              current = current.next;
+            }
+
+          } else if (current === this.linkedList.head) {
+            this.linkedList.head = current.next;
+          } else if (prev) {
+            prev.next = null;
           }
           this.xAxis -= this.circleRadius * 20;
           break;
         }
+
         prev = current;
         current = current.next;
       }
+
       this.targetValue = null;
     },
 
     async searchIntoLinkedList() {
       this.showSuccessResult = false;
       this.showFailureResult = false;
+
       if (this.targetValue > 0) {
         this.showSearchForm = false;
         let current = this.linkedList.head;
         let found;
         let pos = 1;
+
         while (current) {
           found = current.data === this.targetValue;
           current.element.circle.transition()
               .duration(500).attr('fill', "pink");
+
           await new Promise(resolve => setTimeout(resolve, 600));
+
           if (found) {
             current.element.circle.transition()
                 .duration(1000).attr('fill', "green");
             break;
           }
+
           await new Promise(resolve => setTimeout(resolve, 600));
+
           if (current.next) {
             if (current.element.arrow) {
               current.element.arrow.selectAll('line').transition().duration(300).attr('stroke', "pink");
             }
             await new Promise(resolve => setTimeout(resolve, 300));
           }
+
           current = current.next;
           pos++;
         }
+
         if (found) {
           this.result = pos;
           this.showSuccessResult = true;
-          console.log("target found");
         } else {
           this.showFailureResult = true;
         }
@@ -345,6 +353,7 @@ export default {
       }
     }
   },
+  
   mounted() {
     this.createContainer();
     this.linkedList = new LinkedList();
