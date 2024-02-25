@@ -22,6 +22,7 @@
                 { id: 1, label: 'Home', route: '/' },
                 { id: 2, label: 'Searching Algorithm', route: '/search' },
                 { id: 3, label: 'Sorting Algorithm', route: '/sort' },
+                { id: 4, label: 'Linked List', route: '/linked-list' },
                 // Add more menu items for other algorithms
             ];
 
